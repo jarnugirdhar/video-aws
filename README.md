@@ -10,13 +10,13 @@ AWS_SECRET_ACCESS_KEY=;
 You can obtain access keys for bucket from me.
 
 **NOTE:** *Instead of a disk-based database, currently application temporarily persists in JVM for the
-sake of easy prototyping.*
+sake of quick prototyping. However, there are alternative implementations which persist in MySQL are available too.*
                            
 ### Demo URL
 
 The prototype is hosted on AWS Elastic Beanstalk.
 
-URL: http://videoassignment-env.eba-hrfpwi9g.ap-south-1.elasticbeanstalk.com/
+URL: http://learngram-dev.ap-south-1.elasticbeanstalk.com/
 
 **NOTE:** To perform health check, click on the above link.
 
@@ -100,4 +100,6 @@ Response Body: -- Same as List files API --
 - [x] Api documentation
 - [x] Deployment
 - [x] Email verification OTP flow for Signup 
+
+**NOTE**: Regarding email verification, currently application uses a naive token generation (current-timestamp). The idea behind design is to indicate that this can be easily swapped with a secure one.
 
