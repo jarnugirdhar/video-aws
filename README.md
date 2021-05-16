@@ -21,7 +21,9 @@ Sign-up -> Verify -> Login -> Upload
                            
 ### Demo URL
 
-The prototype is hosted on 
+The prototype is hosted on AWS Elastic Beanstalk.
+
+URL: http://videoassignment-env.eba-hrfpwi9g.ap-south-1.elasticbeanstalk.com/
 
 ### API Description
 
