@@ -6,6 +6,7 @@ import ai.learngram.video.repository.api.UserRepository;
 import ai.learngram.video.repository.api.UserTokenRepository;
 import ai.learngram.video.security.JwtTokenExecutive;
 import ai.learngram.video.service.api.UserAuthenticationService;
+import ai.learngram.video.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,6 +54,9 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 
     @Override
     public boolean register(User user) {
+        if(!Validator.validateEmail(user.getEmail()) || !Validator.validatePassword(user.getPassword())) {
+            return false;
+        }
         if(userRepository.exists(user)) {
             return false;
         }
