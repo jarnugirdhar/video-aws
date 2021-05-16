@@ -101,5 +101,5 @@ Response Body: -- Same as List files API --
 - [x] Deployment
 - [x] Email verification OTP flow for Signup 
 
-**NOTE**: Regarding email verification, currently application uses a naive token generation (current-timestamp). The idea behind design is to indicate that this can be easily swapped with a secure one. The initial choice of using currentTimestamp is definitely not an ideal one even for prototyping (Two users may, with a very high probability get colliding tokens), changed it to Java util UUID (which is thread-safe) yet not the best choice as the expiration time is eternity.
+**NOTE**: Regarding email verification, currently application uses a naive token generation (current-timestamp). The idea behind design is to indicate that this can be easily swapped with a secure one. EDIT: *The initial choice of using currentTimestamp is definitely not an ideal one even for prototyping (Two users may, with a very high probability get colliding tokens), changed it to Java util UUID (which is thread-safe) yet not the best choice as the expiration time is eternity.*
 
