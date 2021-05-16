@@ -13,7 +13,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYXJudS5naXJkaGFyQGdtYWlsLmNvbSIsImlhdCI6MTYyMDk5NzkzNCwiZXhwIjoxNjIxMDA2NTc0fQ.BGGWIIOB5tiA26ruldV1e4pcJEy5uLVs185YmWsUtFmNUYavJENM9P77fgHDQWkqqQxohN0LgRyyapSYHG_gAw",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYXJudS5naXJkaGFyQGdtYWlsLmNvbSIsImlhdCI6MTYyMTE2NDQ2NiwiZXhwIjoxNjIxMTczMTA2fQ.QvzaxhR_NhK1cz2_D2aeGsWAdn7kiGKl1ttDKyms3xb4tkFfZyEQ1akcRFoWkB69Zs1HlLaFT1XHM4EnMcKEdA",
 							"type": "string"
 						}
 					]
@@ -26,16 +26,19 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": []
+							"src": "/D:/Important/sample.mp4"
 						}
 					]
 				},
 				"url": {
-					"raw": "localhost:8080/video/upload?name=sample.mp4&thumbnail=http://www.google.com",
+					"raw": "http://learngram-dev.ap-south-1.elasticbeanstalk.com/video/upload?name=test_video.mp4&thumbnail=http://www.google.com",
+					"protocol": "http",
 					"host": [
-						"localhost"
+						"learngram-dev",
+						"ap-south-1",
+						"elasticbeanstalk",
+						"com"
 					],
-					"port": "8080",
 					"path": [
 						"video",
 						"upload"
@@ -43,7 +46,7 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "sample.mp4"
+							"value": "test_video.mp4"
 						},
 						{
 							"key": "thumbnail",
@@ -69,12 +72,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/auth/signup",
+					"raw": "http://learngram-dev.ap-south-1.elasticbeanstalk.com/auth/signup",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"learngram-dev",
+						"ap-south-1",
+						"elasticbeanstalk",
+						"com"
 					],
-					"port": "8080",
 					"path": [
 						"auth",
 						"signup"
@@ -86,18 +91,31 @@
 		{
 			"name": "Stream Video",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYXJudS5naXJkaGFyQGdtYWlsLmNvbSIsImlhdCI6MTYyMTE1Njc5NSwiZXhwIjoxNjIxMTY1NDM1fQ.L2UTm4AazvEmtfvsFfQlB7wqfrW6-epZGA7k9-2VHQ0C_zrZfg2ydJFsbv_-9W4JtTCFl8xvlZvS2XyiodFjuA",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/video/stream/sample.mp4",
+					"raw": "http://learngram-dev.ap-south-1.elasticbeanstalk.com/video/stream/random_title",
+					"protocol": "http",
 					"host": [
-						"localhost"
+						"learngram-dev",
+						"ap-south-1",
+						"elasticbeanstalk",
+						"com"
 					],
-					"port": "8080",
 					"path": [
 						"video",
 						"stream",
-						"sample.mp4"
+						"random_title"
 					]
 				}
 			},
@@ -106,14 +124,27 @@
 		{
 			"name": "List existing videos (Paginated)",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYXJudS5naXJkaGFyQGdtYWlsLmNvbSIsImlhdCI6MTYyMTE0OTA0OSwiZXhwIjoxNjIxMTU3Njg5fQ.a5Lhft0RUQyFPoV5QdhlhYhDF-lJhwl_4bjhCQWkEaY7vaeFkWFvAprK8Ygl97il_dH6GxJ6GfWnziQpQ91tug",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/video/list?pageSize=2&page=3",
+					"raw": "http://learngram-dev.ap-south-1.elasticbeanstalk.com/video/list?pageSize=10&page=1",
+					"protocol": "http",
 					"host": [
-						"localhost"
+						"learngram-dev",
+						"ap-south-1",
+						"elasticbeanstalk",
+						"com"
 					],
-					"port": "8080",
 					"path": [
 						"video",
 						"list"
@@ -121,11 +152,11 @@
 					"query": [
 						{
 							"key": "pageSize",
-							"value": "2"
+							"value": "10"
 						},
 						{
 							"key": "page",
-							"value": "3"
+							"value": "1"
 						}
 					]
 				}
@@ -147,14 +178,83 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:8080/auth/login",
+					"raw": "http://learngram-dev.ap-south-1.elasticbeanstalk.com/auth/login",
+					"protocol": "http",
 					"host": [
-						"localhost"
+						"learngram-dev",
+						"ap-south-1",
+						"elasticbeanstalk",
+						"com"
 					],
-					"port": "8080",
 					"path": [
 						"auth",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search (Title)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqYXJudS5naXJkaGFyQGdtYWlsLmNvbSIsImlhdCI6MTYyMTE0OTMzMSwiZXhwIjoxNjIxMTU3OTcxfQ.XojtbhvqTzHt4Nnb-JB1Eq1hD8AZ-FsMQ-g-Kzg1uFp6rjZRxofv2wJRVjd6xcETw0FaLHY2snLCvPb9kWPsew",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://learngram-dev.ap-south-1.elasticbeanstalk.com/video/search?name=random_title",
+					"protocol": "http",
+					"host": [
+						"learngram-dev",
+						"ap-south-1",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"video",
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "random_title"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account Verify",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://learngram-dev.ap-south-1.elasticbeanstalk.com/auth/verify?token=1621168999645",
+					"protocol": "http",
+					"host": [
+						"learngram-dev",
+						"ap-south-1",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"auth",
+						"verify"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "1621168999645"
+						}
 					]
 				}
 			},
