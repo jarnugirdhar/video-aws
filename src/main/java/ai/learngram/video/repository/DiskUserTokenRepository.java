@@ -1,6 +1,7 @@
 package ai.learngram.video.repository;
 
 import ai.learngram.video.repository.api.UserTokenRepository;
+import ai.learngram.video.utils.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,7 +17,7 @@ public class DiskUserTokenRepository implements UserTokenRepository {
 
     @Override
     public String store(String id) {
-        String token = String.valueOf(System.currentTimeMillis());
+        String token = TokenGenerator.generate();
         String query = "INSERT INTO user_token (email, token) VALUES (:email, :token)";
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("email", id);

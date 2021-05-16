@@ -1,6 +1,7 @@
 package ai.learngram.video.repository;
 
 import ai.learngram.video.repository.api.UserTokenRepository;
+import ai.learngram.video.utils.TokenGenerator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ public class LocalUserTokenRepository implements UserTokenRepository {
 
     @Override
     public String store(String id) {
-        String token = String.valueOf(System.currentTimeMillis());
+        String token = TokenGenerator.generate();
         tokenStore.put(token, id);
         return token;
     }
