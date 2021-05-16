@@ -101,5 +101,5 @@ Response Body: -- Same as List files API --
 - [x] Deployment
 - [x] Email verification OTP flow for Signup 
 
-**NOTE**: Regarding email verification, currently application uses a naive token generation (curren timestamp). The idea behind design was to indicate that this can be easily swapped with a secure one.
+**NOTE**: Regarding email verification, currently application uses a naive token generation (current-timestamp). The idea behind design is to indicate that this can be easily swapped with a secure one.
 
