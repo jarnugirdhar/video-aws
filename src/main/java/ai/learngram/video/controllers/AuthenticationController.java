@@ -37,4 +37,13 @@ public class AuthenticationController {
         return new ResponseEntity<>(new RestResponse(token, 200), HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping("/verify")
+    public ResponseEntity<?> verify(@RequestParam("token") String token) {
+        if(userAuthenticationService.verify(token)) {
+            return new ResponseEntity<>(new RestResponse("Successfully vaildated user account.", 200), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new RestResponse("Failed to validate.", 401), HttpStatus.UNAUTHORIZED);
+    }
+
 }

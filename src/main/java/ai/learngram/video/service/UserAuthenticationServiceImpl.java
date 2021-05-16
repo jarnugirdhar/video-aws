@@ -1,8 +1,10 @@
 package ai.learngram.video.service;
 
 
+import ai.learngram.video.config.SimpleMailMessageConfig;
 import ai.learngram.video.model.User;
 import ai.learngram.video.repository.api.UserRepository;
+import ai.learngram.video.repository.api.UserTokenRepository;
 import ai.learngram.video.security.JwtTokenExecutive;
 import ai.learngram.video.service.api.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,15 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserTokenRepository userTokenRepository;
+
+    @Autowired
+    EmailService emailService;
+
+    @Autowired
+    SimpleMailMessageConfig mailMessageConfig;
+
     @Override
     public String authorize(User user) {
         Authentication authentication = authenticationManager
@@ -45,11 +56,20 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+        String generatedToken = userTokenRepository.store(user.getEmail());
+        emailService.sendEmail(mailMessageConfig.getDefaultMessage(user.getEmail(), generatedToken));
         return true;
     }
 
     @Override
-    public boolean exists(User user) {
+    public boolean verify(String token) {
+        String id = userTokenRepository.fetchByToken(token);
+        if(id != null) {
+            User user = userRepository.getByEmail(id);
+            user.setEnabled(true);
+            userRepository.save(user);
+            return true;
+        }
         return false;
     }
 }

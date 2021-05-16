@@ -13,18 +13,20 @@ public class UserPrincipal implements UserDetails {
 
     private final String email;
     private final String password;
+    private final boolean enabled;
 
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(String email, String password, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+        this.enabled = enabled;
     }
 
     public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UserPrincipal(user.getEmail(), user.getPassword(), authorities);
+        return new UserPrincipal(user.getEmail(), user.getPassword(), user.isEnabled(), authorities);
     }
 
     @Override
@@ -59,6 +61,6 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

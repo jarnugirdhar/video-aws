@@ -23,9 +23,6 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean save(User user) {
-        if(store.containsKey(user.getEmail())) {
-            return false;
-        }
         store.put(user.getEmail(), user);
         return true;
     }

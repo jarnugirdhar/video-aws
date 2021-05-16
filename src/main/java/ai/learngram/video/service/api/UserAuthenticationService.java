@@ -8,5 +8,5 @@ public interface UserAuthenticationService {
 
     boolean register(User user);
 
-    boolean exists(User user);
+    boolean verify(String token);
 }
