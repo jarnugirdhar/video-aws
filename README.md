@@ -11,13 +11,6 @@ You can obtain access keys for bucket from me.
 
 **NOTE:** *Instead of a disk-based database, currently application temporarily persists in JVM for the
 sake of easy prototyping.*
-
-### Flow Description
-
-Sign-up -> Verify -> Login -> Upload
-                           -> Stream
-                           -> Search
-                           -> Search List
                            
 ### Demo URL
 
