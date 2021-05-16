@@ -1,6 +1,5 @@
 package ai.learngram.video.service;
 
-
 import ai.learngram.video.config.SimpleMailMessageConfig;
 import ai.learngram.video.model.User;
 import ai.learngram.video.repository.api.UserRepository;
@@ -8,6 +7,7 @@ import ai.learngram.video.repository.api.UserTokenRepository;
 import ai.learngram.video.security.JwtTokenExecutive;
 import ai.learngram.video.service.api.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,9 +28,11 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     JwtTokenExecutive tokenExecutive;
 
     @Autowired
+    @Qualifier("localUserRepository")
     UserRepository userRepository;
 
     @Autowired
+    @Qualifier("localUserTokenRepository")
     UserTokenRepository userTokenRepository;
 
     @Autowired

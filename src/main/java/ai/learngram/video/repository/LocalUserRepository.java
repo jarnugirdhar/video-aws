@@ -2,17 +2,20 @@ package ai.learngram.video.repository;
 
 import ai.learngram.video.model.User;
 import ai.learngram.video.repository.api.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
-public class UserRepositoryImpl implements UserRepository {
+@Repository
+@Qualifier("localUserRepository")
+public class LocalUserRepository implements UserRepository {
 
     Map<String, User> store;
 
-    public UserRepositoryImpl() {
+    public LocalUserRepository() {
         store = new HashMap<>();
     }
 

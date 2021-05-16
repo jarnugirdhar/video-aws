@@ -1,17 +1,19 @@
 package ai.learngram.video.repository;
 
 import ai.learngram.video.repository.api.UserTokenRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class UserTokenRepositoryImpl implements UserTokenRepository {
+@Qualifier("localUserTokenRepository")
+public class LocalUserTokenRepository implements UserTokenRepository {
 
     Map<String, String> tokenStore;
 
-    public UserTokenRepositoryImpl() {
+    public LocalUserTokenRepository() {
         this.tokenStore = new ConcurrentHashMap<>();
     }
 
