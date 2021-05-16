@@ -1,6 +1,7 @@
 package ai.learngram.video.controllers;
 
 
+import ai.learngram.video.model.Metadata;
 import ai.learngram.video.payload.ListResponse;
 import ai.learngram.video.payload.RestResponse;
 import ai.learngram.video.service.VideoStorageService;
@@ -13,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/video")
@@ -54,20 +56,34 @@ public class VideoController {
     public ResponseEntity<?> list(@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
         try {
-            return new ResponseEntity<>(new ListResponse("Successfully fetched data", 200, videoStorageService.list(pageSize, page)), HttpStatus.OK);
+            List<Metadata> retrievedData = videoStorageService.list(pageSize, page);
+            return new ResponseEntity<>(
+                    new ListResponse("Successfully fetched data", 200, retrievedData),
+                    HttpStatus.OK
+            );
         }
         catch (Exception ex) {
-            return new ResponseEntity<>(new ListResponse("Could not fetch data", 404, new ArrayList<>()), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(
+                    new ListResponse("Something went wrong. Could not fetch data", 500, new ArrayList<>()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam("name") String name) {
         try {
-            return new ResponseEntity(new ListResponse("Found.", 200, Collections.singletonList(videoStorageService.search(name))), HttpStatus.OK);
+            List<Metadata> retrievedData = Collections.singletonList(videoStorageService.search(name));
+            return new ResponseEntity(
+                    new ListResponse("Retrieved metadata for input name", 200, retrievedData),
+                    HttpStatus.OK
+            );
         }
         catch (Exception ex) {
-            return new ResponseEntity(new ListResponse("Not found.", 404, new ArrayList<>()), HttpStatus.OK);
+            return new ResponseEntity(
+                    new ListResponse("Error occurred while searching for file with input name. Cause: " + ex.getMessage(), 404, new ArrayList<>()),
+                    HttpStatus.NOT_FOUND
+            );
         }
     }
 }

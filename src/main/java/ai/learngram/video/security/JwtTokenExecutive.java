@@ -26,8 +26,6 @@ public class JwtTokenExecutive {
         Date currentDate = new Date();
         Date expirationDate = new Date(currentDate.getTime() + expiration);
 
-        System.out.println(secret);
-
         return Jwts
                 .builder()
                 .setSubject(userPrincipal.getUsername())

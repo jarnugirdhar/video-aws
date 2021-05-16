@@ -1,8 +1,8 @@
 package ai.learngram.video.store.s3;
 
 import ai.learngram.video.model.Media;
-import ai.learngram.video.store.api.MediaStorageClient;
-import ai.learngram.video.store.MediaStoreException;
+import ai.learngram.video.store.MediaStorageClient;
+import ai.learngram.video.exception.GeneralCustomException;
 import ai.learngram.video.model.Metadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.s3.paginators.ListObjectsV2Iterable;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -29,7 +30,7 @@ public class S3MediaStorageClient implements MediaStorageClient {
     private int partSize;
 
     @Override
-    public void add(Media media) throws MediaStoreException {
+    public void add(Media media) throws GeneralCustomException {
         try(S3Client client = S3ClientFactory.getClient(awsRegion)) {
             String tag = "name=" + media.getMetadata().getName() + "&thumbnail=" + media.getMetadata().getThumbnail();
 
@@ -60,11 +61,11 @@ public class S3MediaStorageClient implements MediaStorageClient {
             client.completeMultipartUpload(completeRequest);
         }
         catch (Exception ex) {
-            throw new MediaStoreException(ex.getMessage());
+            throw new GeneralCustomException(ex.getMessage());
         }
     }
 
-    private List<CompletedPart> uploadParts(S3Client client, Media media, String uploadId) throws MediaStoreException {
+    private List<CompletedPart> uploadParts(S3Client client, Media media, String uploadId) throws GeneralCustomException {
         List<CompletedPart> parts = new ArrayList<>();
         int[] fileSize = breakFileSize(media.getLength());
         int bufferSize = 0;
@@ -84,7 +85,7 @@ public class S3MediaStorageClient implements MediaStorageClient {
             }
         }
         catch (Exception ex) {
-            throw new MediaStoreException(ex.getMessage());
+            throw new GeneralCustomException(ex.getMessage());
         }
         return parts;
     }
@@ -100,8 +101,6 @@ public class S3MediaStorageClient implements MediaStorageClient {
                 .build();
 
         String eTag = client.uploadPart(partRequest, RequestBody.fromBytes(byteBuffer)).eTag();
-
-        System.out.println(eTag);
 
         return CompletedPart
                 .builder()
@@ -123,7 +122,7 @@ public class S3MediaStorageClient implements MediaStorageClient {
     }
 
     @Override
-    public Media retrieve(String title) throws MediaStoreException {
+    public Media retrieve(String title) throws GeneralCustomException {
         try(S3Client client = S3ClientFactory.getClient(awsRegion)) {
             GetObjectRequest getObjectRequest = GetObjectRequest
                     .builder()
@@ -135,17 +134,17 @@ public class S3MediaStorageClient implements MediaStorageClient {
             return new Media(title, fileSize, response.asInputStream());
         }
         catch (Exception ex) {
-            throw new MediaStoreException(ex.getMessage());
+            throw new GeneralCustomException(ex.getMessage());
         }
     }
 
     @Override
-    public List<Metadata> listAll(Integer pageSize, Integer page) throws MediaStoreException {
+    public List<Metadata> listAll(Integer pageSize, Integer page) throws GeneralCustomException {
         try(S3Client client = S3ClientFactory.getClient(awsRegion)) {
             ListObjectsV2Request request = ListObjectsV2Request
                     .builder()
                     .bucket(bucket)
-                    .maxKeys(pageSize)
+                    .maxKeys(Math.min(pageSize, 1000))
                     .build();
             ListObjectsV2Iterable response = client.listObjectsV2Paginator(request);
             List<S3Object> fetchedObjects = new ArrayList<>();
@@ -159,12 +158,62 @@ public class S3MediaStorageClient implements MediaStorageClient {
             return extractMetadata(client, fetchedObjects);
         }
         catch (Exception ex) {
-            throw new MediaStoreException(ex.getMessage());
+            throw new GeneralCustomException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<Metadata> listAll() throws GeneralCustomException {
+        try(S3Client client = S3ClientFactory.getClient(awsRegion)) {
+            ListObjectsV2Request request = ListObjectsV2Request
+                    .builder()
+                    .bucket(bucket)
+                    .maxKeys(1000)
+                    .build();
+            ListObjectsV2Iterable response = client.listObjectsV2Paginator(request);
+            List<S3Object> fetchedObjects = new ArrayList<>();
+            for (ListObjectsV2Response result : response) {
+                fetchedObjects.addAll(result.contents());
+            }
+            return extractMetadata(client, fetchedObjects);
+        }
+        catch (Exception ex) {
+            throw new GeneralCustomException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public Metadata search(String title) throws GeneralCustomException {
+        try(S3Client client = S3ClientFactory.getClient(awsRegion)) {
+            ListObjectsV2Request request = ListObjectsV2Request
+                    .builder()
+                    .bucket(bucket)
+                    .prefix(title)
+                    .maxKeys(1000)
+                    .build();
+            ListObjectsV2Iterable response = client.listObjectsV2Paginator(request);
+            List<S3Object> fetchedObjects = new ArrayList<>();
+            for (ListObjectsV2Response result : response) {
+                fetchedObjects.addAll(result.contents());
+            }
+            /*
+            * Ideally output should either be 0 or 1, in case it's greater than 1 we just select first one for sanity.
+             */
+            if(fetchedObjects.size() > 0) {
+                if(fetchedObjects.get(0).key().equals(title)) {
+                    return extractMetadata(client, Collections.singletonList(fetchedObjects.get(0))).get(0);
+                }
+            }
+            return new Metadata();
+        }
+        catch (Exception ex) {
+            throw new GeneralCustomException(ex.getMessage());
         }
     }
 
     private List<Metadata> extractMetadata(S3Client client, List<S3Object> s3Objects) {
         List<Metadata> result = new ArrayList<>();
+
         s3Objects.stream().map(S3Object::key).forEach(x -> {
             GetObjectTaggingRequest getTaggingRequest = GetObjectTaggingRequest
                     .builder()

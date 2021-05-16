@@ -1,9 +1,10 @@
 package ai.learngram.video.service;
 
+import ai.learngram.video.exception.GeneralCustomException;
 import ai.learngram.video.model.Media;
 import ai.learngram.video.model.Metadata;
 import ai.learngram.video.store.*;
-import ai.learngram.video.store.api.MediaStorageClient;
+import ai.learngram.video.store.cache.MediaStorageCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class VideoStorageService {
@@ -21,23 +20,24 @@ public class VideoStorageService {
     @Autowired
     MediaStorageClient storageClient;
 
-    Map<String, Metadata> temporaryStorage;
+    @Autowired
+    MediaStorageCache storageCache;
 
-    public VideoStorageService() {
-        this.temporaryStorage = new HashMap<>();
-    }
-
-    public void upload(InputStream inputStream, int fileSize, String fileName, String thumbnail) throws MediaStoreException {
+    public void upload(InputStream inputStream, int fileSize, String fileName, String thumbnail) throws GeneralCustomException {
         Media media = new Media(new Metadata(fileName, thumbnail),
                 fileSize,
                 inputStream);
 
         storageClient.add(media);
-
-        temporaryStorage.put(media.getMetadata().getName(), media.getMetadata());
+        storageCache.add(media.getMetadata());
     }
 
-    public Mono<ResponseEntity<byte[]>> download(String fileName) throws MediaStoreException {
+    public Mono<ResponseEntity<byte[]>> download(String fileName) throws GeneralCustomException {
+        /*
+        *  Additional check for sanity.
+         */
+        search(fileName);
+
         Media media = storageClient.retrieve(fileName);
         try(InputStream inputStream = media.getDataStream()) {
             return Mono.just(
@@ -48,18 +48,29 @@ public class VideoStorageService {
             );
         }
         catch (Exception ex) {
-            throw new MediaStoreException(ex.getMessage());
+            throw new GeneralCustomException(ex.getMessage());
         }
     }
 
-    public List<Metadata> list(Integer pageSize, Integer page) throws MediaStoreException {
+    public List<Metadata> list(Integer pageSize, Integer page) throws GeneralCustomException {
         return storageClient.listAll(pageSize, page);
     }
 
-    public Metadata search(String name) throws MediaStoreException {
-        if(temporaryStorage.containsKey(name)) {
-            return temporaryStorage.get(name);
+    public Metadata search(String name) throws GeneralCustomException {
+        if(name.isBlank()) {
+            throw new GeneralCustomException("Invalid input");
         }
-        throw new MediaStoreException("Unable to find");
+        Metadata cachedMetadata = storageCache.search(name);
+        if(cachedMetadata.getName() != null) {
+            return cachedMetadata;
+        }
+        else {
+            Metadata retrieved = storageClient.search(name);
+            if(retrieved.getName() != null) {
+                storageCache.add(retrieved);
+                return retrieved;
+            }
+        }
+        throw new GeneralCustomException("Could not find file with name: " + name);
     }
 }
