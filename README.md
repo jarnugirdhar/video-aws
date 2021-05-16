@@ -25,6 +25,8 @@ The prototype is hosted on AWS Elastic Beanstalk.
 
 URL: http://videoassignment-env.eba-hrfpwi9g.ap-south-1.elasticbeanstalk.com/
 
+**NOTE:** To perform health check, click on the above link.
+
 ### API Description
 
 All the APIs are described below and the corresponding collection can be found in root directory for project.
