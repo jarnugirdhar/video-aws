@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class LocalMediaStorageCache implements MediaStorageCache {
@@ -13,7 +13,7 @@ public class LocalMediaStorageCache implements MediaStorageCache {
     Map<String, Metadata> cache;
 
     public LocalMediaStorageCache() {
-        this.cache = new TreeMap<>();
+        this.cache = new ConcurrentHashMap<>();
     }
 
     @Override

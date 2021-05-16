@@ -3,8 +3,8 @@ package ai.learngram.video.repository;
 import ai.learngram.video.repository.api.UserTokenRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class UserTokenRepositoryImpl implements UserTokenRepository {
@@ -12,7 +12,7 @@ public class UserTokenRepositoryImpl implements UserTokenRepository {
     Map<String, String> tokenStore;
 
     public UserTokenRepositoryImpl() {
-        this.tokenStore = new HashMap<>();
+        this.tokenStore = new ConcurrentHashMap<>();
     }
 
     @Override

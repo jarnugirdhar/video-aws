@@ -68,6 +68,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             User user = userRepository.getByEmail(id);
             user.setEnabled(true);
             userRepository.save(user);
+            userTokenRepository.invalidate(token);
             return true;
         }
         return false;
