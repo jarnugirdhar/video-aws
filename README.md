@@ -14,10 +14,6 @@ sake of quick prototyping. However, there are alternative implementations which 
                            
 ### Demo URL
 
-The prototype is hosted on AWS Elastic Beanstalk.
-
-URL: http://learngram-dev.ap-south-1.elasticbeanstalk.com/
-
 **NOTE:** To perform health check, click on the above link.
 
 ### API Description
