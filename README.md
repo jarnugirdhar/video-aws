@@ -1,4 +1,4 @@
-# Basic Video Streaming Platform
+# Video Streaming Platform - Learning Purpose only! :)
 
 ### Basic Requirements
 Java 11+ for building the project source.
